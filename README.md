@@ -172,6 +172,16 @@ git branch -d feature/nombre-corto
 git push origin --delete feature/nombre-corto
 ```
 
+O, desde consola:
+```bash
+git switch master && git pull
+git merge --no-ff feature/nombre-corto
+git push origin master
+git switch master && git pull
+git branch -d feature/nombre-corto
+git push origin --delete feature/nombre-corto
+```
+
 **Antes de cada commit:** `git status` y comprobar que `.env.local` no aparece.
 
 ### Convención de commits
