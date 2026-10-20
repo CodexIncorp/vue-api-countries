@@ -69,9 +69,9 @@ export async function getAllCountries() {
     return all
 }
 
-export async function getCountryByCode(code) {
+export async function getCountryByCode(alpha_3) {
     const date = await request(
-        `/codes.alpha_3/${encodeURIComponent(code)}?response_fields=${DETAIL_FIELDS}`
+        `/codes.alpha_3/${encodeURIComponent(alpha_3)}?response_fields=${DETAIL_FIELDS}`
     )
     return data.objects?.[0] ?? null
 }
