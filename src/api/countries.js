@@ -1,5 +1,5 @@
 const BASE_URL = 'https://api.restcountries.com/countries/v5'
-const API_KEY = import.meta.env.RESTCOUNTRIES_KEY
+const API_KEY = import.meta.env.VITE_RESTCOUNTRIES_KEY
 
 const LIST_FIELDS = 'names.common,codes.alpha_3,flag.url_svg,flag.description,region'
 const DETAIL_FIELDS = 'names.common,names.official,capitals,region,subregion,population,timezones,flag.url_svg,flag.description'
