@@ -43,7 +43,15 @@ onMounted(async () => {
             </p>
             <p v-if="country.timezones?.length">
                 <strong>Zonas horarias:</strong>
-                <span v-for="tz in country.timezones" :key="tz" class="tag">{{ tz }}</span>
+                <span v-for="tz in country.timezones" :key="tz" class="tag">
+                    {{ tz }}
+                </span>
+            </p>
+            <p v-if="country.languages?.length">
+                <strong>Idiomas:</strong>
+                <span v-for="lang in country.languages" :key="lang.iso639_3" class="tag">
+                    {{ lang.name }}
+                </span>
             </p>
         </div>
     </article>

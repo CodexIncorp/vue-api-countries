@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
-import CountryView from "@/views/CountryView.vue";
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -9,7 +8,7 @@ const router = createRouter({
     {
       path: "/pais:code",
       name: "country",
-      component: CountryView,
+      component: ()=> import("@/views/CountryView.vue"),
       props: true,
     },
   ],

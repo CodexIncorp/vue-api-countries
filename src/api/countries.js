@@ -2,7 +2,7 @@ const BASE_URL = 'https://api.restcountries.com/countries/v5'
 const API_KEY = import.meta.env.VITE_RESTCOUNTRIES_KEY
 
 const LIST_FIELDS = 'names.common,codes.alpha_3,flag.url_svg,flag.description,region'
-const DETAIL_FIELDS = 'names.common,names.official,capitals,region,subregion,population,timezones,flag.url_svg,flag.description'
+const DETAIL_FIELDS = 'names.common,names.official,capitals,region,subregion,population,timezones,languages,flag.url_svg,flag.description'
 
 const CACHE_KEY = 'countries-list-v2'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // los términos permiten hasta 3 días
@@ -83,7 +83,7 @@ export async function getAllCountries() {
 }
 
 export async function getCountryByCode(alpha_3) {
-    const date = await request(
+    const data = await request(
         `/codes.alpha_3/${encodeURIComponent(alpha_3)}?response_fields=${DETAIL_FIELDS}`
     )
     return data.objects?.[0] ?? null
