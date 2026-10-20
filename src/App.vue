@@ -10,6 +10,9 @@ import { RouterLink, RouterView } from 'vue-router';
   <main class="container">
     <RouterView />
   </main>
+  <footer class="footer-credit">
+    Datos: <a href="https://restcountries.com" target="_blank" rel="noopener">REST Countries</a>
+  </footer>
 </template>
 
 <style scoped>
@@ -34,5 +37,12 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 1.5rem;
+}
+
+.footer-credit {
+  text-align: center;
+  padding: 1.5rem;
+  color: #777;
+  font-size: .9rem;
 }
 </style>
