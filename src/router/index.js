@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     { path: "/", name: "home", component: HomeView },
     {
-      path: "/pais:code",
+      path: "/pais/:code",
       name: "country",
       component: ()=> import("@/views/CountryView.vue"),
       props: true,

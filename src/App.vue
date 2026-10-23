@@ -15,7 +15,7 @@ import { RouterLink, RouterView } from 'vue-router';
   </footer>
 </template>
 
-<style scoped>
+<style>
 body {
   font-family: system-ui, sans-serif;
   margin: 0;
