@@ -11,6 +11,12 @@ const router = createRouter({
       component: ()=> import("@/views/CountryView.vue"),
       props: true,
     },
+    {
+      path: "/territorio/:slug",
+      name: "territory",
+      component: ()=> import("@/views/CountryView.vue"),
+      props: true,
+    },
   ],
 });
 

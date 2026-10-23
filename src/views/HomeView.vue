@@ -2,11 +2,22 @@
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { getAllCountries } from '../api/countries'
+import {
+    getCountryFlagUrl,
+    getCountryNameInSpanish,
+    getLocalTerritory,
+} from '../utils/countries'
 
 const countries = ref([])
 const loading = ref(true)
 const error = ref('')
 const search = ref('')
+const defaultFlagUrl = `${import.meta.env.BASE_URL}default-flag.svg`
+
+function useDefaultFlag(event) {
+    if (event.target.getAttribute('src') !== defaultFlagUrl)
+        event.target.src = defaultFlagUrl
+}
 
 async function fetchCountries() {
     loading.value = true
@@ -28,7 +39,7 @@ const filtered = computed(() => {
     if (!term) return countries.value
     return countries.value.filter(
         (c) =>
-            c.names.common.toLowerCase().includes(term) ||
+            getCountryNameInSpanish(c).toLowerCase().includes(term) ||
             (c.region ?? '').toLowerCase().includes(term)
     )
 })
@@ -55,18 +66,18 @@ const filtered = computed(() => {
         <p class="info">{{ filtered.length }} resultado(s)</p>
         <div class="grid">
             <component v-for="(c, index) in filtered"
-                :key="c.codes?.alpha_3 ?? c.names.common ?? index"
-                :is="c.codes?.alpha_3 ? RouterLink : 'article'"
+                :key="c.codes?.alpha_3 || c.names.common || index"
+                :is="c.codes?.alpha_3 || getLocalTerritory(c) ? RouterLink : 'article'"
                 v-bind="c.codes?.alpha_3
                     ? { to: { name: 'country', params: { code: c.codes.alpha_3 } } }
+                    : getLocalTerritory(c)
+                        ? { to: { name: 'territory', params: { slug: getLocalTerritory(c).slug } } }
                     : {}"
                 class="card">
-                <img v-if="c.flag?.url_svg" :src="c.flag.url_svg"
-                    :alt="c.flag.description || `Bandera de ${c.names.common}`" />
-                <div v-else class="flag-placeholder" aria-label="Bandera no disponible">
-                    Bandera no disponible
-                </div>
-                <h3>{{ c.names.common }}</h3>
+                <img :src="getCountryFlagUrl(c)"
+                    :alt="c.flag?.description || `Bandera de ${getCountryNameInSpanish(c)}`"
+                    @error="useDefaultFlag" />
+                <h3>{{ getCountryNameInSpanish(c) }}</h3>
                 <p>{{ c.region || 'Región no disponible' }}</p>
             </component>
         </div>
@@ -115,17 +126,6 @@ const filtered = computed(() => {
     width: 100%;
     height: 110px;
     object-fit: contain;
-}
-
-.flag-placeholder {
-    display: grid;
-    width: 100%;
-    height: 110px;
-    place-items: center;
-    border-radius: 6px;
-    background: #f0f2f5;
-    color: #777;
-    font-size: .9rem;
 }
 
 .card h3 {

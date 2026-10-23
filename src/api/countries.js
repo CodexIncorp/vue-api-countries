@@ -1,15 +1,15 @@
 const BASE_URL = 'https://api.restcountries.com/countries/v5'
 const API_KEY = import.meta.env.VITE_RESTCOUNTRIES_KEY
 
-const LIST_FIELDS = 'names.common,codes.alpha_3,flag.url_svg,flag.description,region'
-const DETAIL_FIELDS = 'names.common,names.official,capitals,region,subregion,population,timezones,languages,flag.url_svg,flag.description'
+const LIST_FIELDS = 'names.common,codes.alpha_2,codes.alpha_3,flag.url_svg,flag.description,region'
+const DETAIL_FIELDS = 'names.common,names.official,codes.alpha_2,capitals,region,subregion,population,timezones,languages,flag.url_svg,flag.description'
 
-const CACHE_KEY = 'countries-list-v3'
+const CACHE_KEY = 'countries-list-v4'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // los términos permiten hasta 3 días
 
 async function request(path) {
     if (!API_KEY)
-        throw new Error('Falta RESTCOUNTRIES_KEY (revisa tu archivo .env.local)')
+        throw new Error('Falta VITE_RESTCOUNTRIES_KEY (revisa tu archivo .env.local y reinicia Vite)')
 
     const res = await fetch(`${BASE_URL}${path}`, {
         headers: { Authorization: `Bearer ${API_KEY}` },

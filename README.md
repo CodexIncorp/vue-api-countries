@@ -34,7 +34,7 @@ Sitio publicado: `https://codexincorp.github.io/vue-api-countries/`
 
 ## Funcionalidades
 
-- Lista de países con bandera, nombre y región.
+- Lista de países con banderas y nombres en español; usa banderas locales para Abjasia, Chipre del Norte, Somalilandia y Osetia del Sur, y permite consultar la información de estos territorios.
 - Buscador por nombre o región (filtrado en memoria, sin peticiones extra).
 - Indicador de carga, mensaje de error con botón *Reintentar* y mensaje de "sin resultados".
 - Vista de detalle (`/#/pais/:code`): nombre oficial, capital, región, población, zonas horarias.
