@@ -12,6 +12,7 @@ const countries = ref([])
 const loading = ref(true)
 const error = ref('')
 const search = ref('')
+const sortBy = ref('name_asc')
 const defaultFlagUrl = `${import.meta.env.BASE_URL}default-flag.svg`
 
 function useDefaultFlag(event) {
@@ -35,20 +36,46 @@ onMounted(fetchCountries)
 
 const filtered = computed(() => {
     const term = search.value.trim().toLowerCase()
-    if (!term) return countries.value
-    return countries.value.filter(
-        (c) =>
-            getCountryNameInSpanish(c).toLowerCase().includes(term) ||
-            (c.region ?? '').toLowerCase().includes(term)
-    )
+    let result = countries.value
+
+    if (term) {
+        result = result.filter(
+            (c) =>
+                getCountryNameInSpanish(c).toLowerCase().includes(term) ||
+                (c.region ?? '').toLowerCase().includes(term)
+        )
+    }
+
+    return result.slice().sort((a, b) => {
+        const nameA = getCountryNameInSpanish(a)
+        const nameB = getCountryNameInSpanish(b)
+        const regionA = a.region || ''
+        const regionB = b.region || ''
+
+        if (sortBy.value === 'name_asc') return nameA.localeCompare(nameB)
+        if (sortBy.value === 'name_desc') return nameB.localeCompare(nameA)
+        if (sortBy.value === 'region_asc') return regionA.localeCompare(regionB) || nameA.localeCompare(nameB)
+        if (sortBy.value === 'region_desc') return regionB.localeCompare(regionA) || nameA.localeCompare(nameB)
+        
+        return 0
+    })
 })
 </script>
 
 <template>
     <h1>Países del mundo</h1>
 
-    <input v-model="search" class="search" type="text"
-        placeholder="Buscar por nombre o región (ej. Mexico, Europe)..." />
+    <div class="controls">
+        <input v-model="search" class="search" type="text"
+            placeholder="Buscar por nombre o región (ej. Mexico, Europe)..." />
+        
+        <select v-model="sortBy" class="sort-select">
+            <option value="name_asc">Nombre (A - Z)</option>
+            <option value="name_desc">Nombre (Z - A)</option>
+            <option value="region_asc">Región (A - Z)</option>
+            <option value="region_desc">Región (Z - A)</option>
+        </select>
+    </div>
 
     <p v-if="loading" class="info">Cargando países...</p>
 
@@ -84,8 +111,14 @@ const filtered = computed(() => {
 </template>
 
 <style scoped>
+.controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
 .search {
-    width: 100%;
+    flex: 1;
     padding: .75rem;
     font-size: 1rem;
     border: 1px solid #ccc;
@@ -96,6 +129,22 @@ const filtered = computed(() => {
 
 .search:focus {
     outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.sort-select {
+    padding: .75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sort-select:focus {
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
@@ -161,5 +210,11 @@ const filtered = computed(() => {
 
 .list-leave-active {
     position: absolute;
+}
+
+@media (max-width: 600px) {
+    .controls {
+        flex-direction: column;
+    }
 }
 </style>
