@@ -31,7 +31,6 @@ async function fetchCountries() {
     }
 }
 
-// Primera llamada a la API
 onMounted(fetchCountries)
 
 const filtered = computed(() => {
@@ -64,7 +63,7 @@ const filtered = computed(() => {
 
     <template v-else>
         <p class="info">{{ filtered.length }} resultado(s)</p>
-        <div class="grid">
+        <TransitionGroup name="list" tag="div" class="grid">
             <component v-for="(c, index) in filtered"
                 :key="c.codes?.alpha_3 || c.names.common || index"
                 :is="c.codes?.alpha_3 || getLocalTerritory(c) ? RouterLink : 'article'"
@@ -80,7 +79,7 @@ const filtered = computed(() => {
                 <h3>{{ getCountryNameInSpanish(c) }}</h3>
                 <p>{{ c.region || 'Región no disponible' }}</p>
             </component>
-        </div>
+        </TransitionGroup>
     </template>
 </template>
 
@@ -92,6 +91,13 @@ const filtered = computed(() => {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
 .info {
@@ -116,16 +122,20 @@ const filtered = computed(() => {
     text-decoration: none;
     color: inherit;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 .card img {
     width: 100%;
     height: 110px;
     object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 4px;
 }
 
 .card h3 {
@@ -135,5 +145,21 @@ const filtered = computed(() => {
 .card p {
     margin: 0;
     color: #777;
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.4s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.list-leave-active {
+    position: absolute;
 }
 </style>
