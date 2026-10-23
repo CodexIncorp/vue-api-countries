@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
 import { getAllCountries } from '../api/countries'
 
 const countries = ref([])
@@ -53,12 +54,21 @@ const filtered = computed(() => {
     <template v-else>
         <p class="info">{{ filtered.length }} resultado(s)</p>
         <div class="grid">
-            <RouterLink v-for="c in filtered" :key="c.codes.alpha_3"
-                :to="{ name: 'country', params: { code: c.codes.alpha_3 } }" class="card">
-                <img :src="c.flag.url_svg" :alt="c.flag.description || `Bandera de ${c.names.common}`" />
+            <component v-for="(c, index) in filtered"
+                :key="c.codes?.alpha_3 ?? c.names.common ?? index"
+                :is="c.codes?.alpha_3 ? RouterLink : 'article'"
+                v-bind="c.codes?.alpha_3
+                    ? { to: { name: 'country', params: { code: c.codes.alpha_3 } } }
+                    : {}"
+                class="card">
+                <img v-if="c.flag?.url_svg" :src="c.flag.url_svg"
+                    :alt="c.flag.description || `Bandera de ${c.names.common}`" />
+                <div v-else class="flag-placeholder" aria-label="Bandera no disponible">
+                    Bandera no disponible
+                </div>
                 <h3>{{ c.names.common }}</h3>
-                <p>{{ c.region }}</p>
-            </RouterLink>
+                <p>{{ c.region || 'Región no disponible' }}</p>
+            </component>
         </div>
     </template>
 </template>
@@ -105,6 +115,17 @@ const filtered = computed(() => {
     width: 100%;
     height: 110px;
     object-fit: contain;
+}
+
+.flag-placeholder {
+    display: grid;
+    width: 100%;
+    height: 110px;
+    place-items: center;
+    border-radius: 6px;
+    background: #f0f2f5;
+    color: #777;
+    font-size: .9rem;
 }
 
 .card h3 {

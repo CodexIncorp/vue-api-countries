@@ -4,7 +4,7 @@ const API_KEY = import.meta.env.VITE_RESTCOUNTRIES_KEY
 const LIST_FIELDS = 'names.common,codes.alpha_3,flag.url_svg,flag.description,region'
 const DETAIL_FIELDS = 'names.common,names.official,capitals,region,subregion,population,timezones,languages,flag.url_svg,flag.description'
 
-const CACHE_KEY = 'countries-list-v2'
+const CACHE_KEY = 'countries-list-v3'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // los términos permiten hasta 3 días
 
 async function request(path) {
@@ -51,7 +51,7 @@ function writeCache(countries) {
 }
 
 function hasCode(c) {
-    return Boolean(c.codes && c.codes.alpha_3)    
+    return Boolean(c.codes && c.codes.alpha_3)
 }
 
 export async function getAllCountries() {
@@ -70,16 +70,15 @@ export async function getAllCountries() {
         offset += limit
     }
 
-    const valid = all.filter(hasCode)
-    if (valid.length < all.length) {
+    if (all.some((c) => !hasCode(c))) {
         console.warn(
-            'Omitidos por no tener codes.alpha_3:',
+            'Países sin codes.alpha_3 (se muestran sin enlace):',
             all.filter((c) => !hasCode(c)).map((c) => c.names.common)
         )
     }
 
-    writeCache(valid) // la API ya los devuelve ordenados por names.common
-    return valid
+    writeCache(all) // la API ya los devuelve ordenados por names.common
+    return all
 }
 
 export async function getCountryByCode(alpha_3) {
