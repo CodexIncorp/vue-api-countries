@@ -13,6 +13,7 @@ const loading = ref(true)
 const error = ref('')
 const search = ref('')
 const sortBy = ref('name_asc')
+const selectedRegion = ref('')
 const defaultFlagUrl = `${import.meta.env.BASE_URL}default-flag.svg`
 
 function useDefaultFlag(event) {
@@ -38,6 +39,10 @@ const filtered = computed(() => {
     const term = search.value.trim().toLowerCase()
     let result = countries.value
 
+    if (selectedRegion.value) {
+        result = result.filter((c) => c.region === selectedRegion.value)
+    }
+
     if (term) {
         result = result.filter(
             (c) =>
@@ -49,13 +54,9 @@ const filtered = computed(() => {
     return result.slice().sort((a, b) => {
         const nameA = getCountryNameInSpanish(a)
         const nameB = getCountryNameInSpanish(b)
-        const regionA = a.region || ''
-        const regionB = b.region || ''
 
         if (sortBy.value === 'name_asc') return nameA.localeCompare(nameB)
         if (sortBy.value === 'name_desc') return nameB.localeCompare(nameA)
-        if (sortBy.value === 'region_asc') return regionA.localeCompare(regionB) || nameA.localeCompare(nameB)
-        if (sortBy.value === 'region_desc') return regionB.localeCompare(regionA) || nameA.localeCompare(nameB)
         
         return 0
     })
@@ -69,11 +70,19 @@ const filtered = computed(() => {
         <input v-model="search" class="search" type="text"
             placeholder="Buscar por nombre o región (ej. Mexico, Europe)..." />
         
+        <select v-model="selectedRegion" class="sort-select">
+            <option value="">Todos los continentes</option>
+            <option value="Africa">África</option>
+            <option value="Americas">América</option>
+            <option value="Antarctic">Antártida</option>
+            <option value="Asia">Asia</option>
+            <option value="Europe">Europa</option>
+            <option value="Oceania">Oceanía</option>
+        </select>
+
         <select v-model="sortBy" class="sort-select">
             <option value="name_asc">Nombre (A - Z)</option>
             <option value="name_desc">Nombre (Z - A)</option>
-            <option value="region_asc">Región (A - Z)</option>
-            <option value="region_desc">Región (Z - A)</option>
         </select>
     </div>
 
